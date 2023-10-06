@@ -1,17 +1,17 @@
 from django.contrib import admin
 
-from .models import (
+from food.models import (
     Cart,
     Favorite,
     Ingredient,
     Tag,
     Recipe,
     RecipeIngredient,
-    Subscription,
-    User,
 )
+from users.models import Subscription, User
 
 
+@admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ('pk', 'username', 'email', 'first_name', 'last_name')
     list_filter = ('username', 'email')
@@ -19,18 +19,21 @@ class UserAdmin(admin.ModelAdmin):
     empty_value_display = '-empty-'
 
 
+@admin.register(Subscription)
 class SubscribeAdmin(admin.ModelAdmin):
     list_display = ('pk', 'user', 'author')
     list_editable = ('user', 'author')
     empty_value_display = '-empty-'
 
 
+@admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('pk', 'name', 'measurement_unit')
     list_filter = ('name',)
     search_fields = ('name',)
 
 
+@admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = ('pk', 'name', 'color', 'slug')
     list_editable = ('name', 'color', 'slug')
@@ -43,11 +46,7 @@ class IngredientInline(admin.TabularInline):
     fields = ('ingredient', 'amount')
 
 
-# class TagInline(admin.StackedInline):
-#     model = Tag
-#     fields = ('id', 'name')
-
-
+@admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     inlines = (IngredientInline,)
     list_display = (
@@ -67,26 +66,19 @@ class RecipeAdmin(admin.ModelAdmin):
         return obj.favorite_recipe.count()
 
 
+@admin.register(RecipeIngredient)
 class RecipeIngredientAdmin(admin.ModelAdmin):
     list_display = ('pk', 'recipe', 'ingredient', 'amount')
     list_editable = ('recipe', 'ingredient', 'amount')
 
 
+@admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
     list_display = ('pk', 'user', 'recipe')
     list_editable = ('user', 'recipe')
 
 
+@admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
     list_display = ('pk', 'user', 'recipe')
     list_editable = ('user', 'recipe')
-
-
-admin.site.register(User, UserAdmin)
-admin.site.register(Subscription, SubscribeAdmin)
-admin.site.register(Ingredient, IngredientAdmin)
-admin.site.register(Tag, TagAdmin)
-admin.site.register(Recipe, RecipeAdmin)
-admin.site.register(RecipeIngredient, RecipeIngredientAdmin)
-admin.site.register(Favorite, FavoriteAdmin)
-admin.site.register(Cart, CartAdmin)

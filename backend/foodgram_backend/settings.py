@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'django_filters',
     'djoser',
     'food.apps.FoodConfig',
+    'api.apps.ApiConfig',
+    'users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [
@@ -72,18 +74,19 @@ WSGI_APPLICATION = 'foodgram_backend.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'user'),
-        'USER': os.getenv('POSTGRES_USER', 'user'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
-        'HOST': os.getenv('DB_HOST', ''),
-        'PORT': os.getenv('DB_PORT', '5432')
-    }
     # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': os.getenv('POSTGRES_DB', 'user'),
+    #     'USER': os.getenv('POSTGRES_USER', 'user'),
+    #     'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
+    #     'HOST': os.getenv('DB_HOST', ''),
+    #     'PORT': os.getenv('DB_PORT', '5432')
     # }
+    # For local testing
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 
@@ -137,7 +140,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly'
-        # 'rest_framework.permissions.AllowAny'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication'
@@ -146,15 +148,14 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 6,
 }
 
-AUTH_USER_MODEL = 'food.User'
+AUTH_USER_MODEL = 'users.User'
 DJOSER = {
     'LOGIN_FIELD': 'email',
     'HIDE_USERS': False,
     'SERIALIZERS': {
-        'user': 'food.serializers.UserSerializer',
-        'user_create': 'food.serializers.SignUpSerializer',
-        'current_user': 'food.serializers.UserSerializer',
-        # 'token': 'food.serializers.TokenSerializer',
+        'user': 'api.serializers.UserSerializer',
+        'user_create': 'api.serializers.SignUpSerializer',
+        'current_user': 'api.serializers.UserSerializer',
     },
     'PERMISSIONS': {
         'user': ['rest_framework.permissions.AllowAny'],

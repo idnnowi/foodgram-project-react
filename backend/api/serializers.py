@@ -4,40 +4,17 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from .models import (
+from food.models import (
     Cart,
     Favorite,
     Ingredient,
     Tag,
     Recipe,
     RecipeIngredient,
-    Subscription,
-    User,
 )
+from users.models import Subscription, User
 
 
-# class SignUpSerializer(serializers.Serializer):
-#     username = serializers.CharField(
-#         required=True,
-#         max_length=150,
-#         validators=(UnicodeUsernameValidator(), MinLengthValidator(3)),
-#     )
-#     email = serializers.EmailField(required=True, max_length=254)
-#     first_name = serializers.CharField(required=True, max_length=254)
-#     last_name = serializers.CharField(required=True, max_length=254)
-#     password = serializers.CharField(required=True)
-
-
-#     def validate(self, data):
-#         try:
-#             User.objects.get_or_create(
-#                 username=data.get('username'), email=data.get('email')
-#             )
-#         except IntegrityError:
-#             raise serializers.ValidationError(
-#                 'Пользователь с таким username или email уже существует.'
-#             )
-#         return data
 class SignUpSerializer(UserCreateSerializer):
     class Meta:
         model = User
@@ -120,17 +97,12 @@ class UserSubscriptionSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         recipes_limit = request.query_params.get('recipes_limit')
         recipes = Recipe.objects.filter(author=obj)
-        # if recipes_limit:
-        #     recipes = recipes[: int(recipes_limit)]
-        # return recipes
-        # recipes = obj.recipes.all()
         if recipes_limit:
             recipes = recipes[: int(recipes_limit)]
         return RecipeSmallSerializer(recipes, many=True, read_only=True).data
 
     def get_recipes_count(self, obj):
         return Recipe.objects.filter(author=obj).count()
-        # return obj.recipes.all().count()
 
 
 class SubscriptionSerializer(serializers.Serializer):
@@ -167,11 +139,6 @@ class SubscriptionSerializer(serializers.Serializer):
         return UserSubscriptionSerializer(
             instance.author, context={'request': request}
         ).data
-
-
-# class TokenSerializer(serializers.Serializer):
-#     username = serializers.CharField(required=True)
-#     confirmation_code = serializers.CharField(required=True)
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -253,7 +220,6 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 class PostRecipeSerializer(serializers.ModelSerializer):
     ingredients = IngredientPostSerializer(
-        # required=True,
         many=True,
         source='recipeingredient',
     )

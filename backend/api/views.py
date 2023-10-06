@@ -12,16 +12,15 @@ from rest_framework.permissions import (
 from rest_framework.response import Response
 
 from .filters import IngredientFilter, RecipeFilter
-from .models import (
+from food.models import (
     Cart,
     Favorite,
     Ingredient,
     Tag,
     Recipe,
     RecipeIngredient,
-    Subscription,
-    User,
 )
+from users.models import Subscription, User
 from .permissions import IsAuthorOrAdminOrReadOnly
 from .serializers import (
     CartSerializer,
@@ -40,7 +39,6 @@ class CustomUserViewSet(UserViewSet):
     pagination_class = LimitOffsetPagination
 
     def get_permissions(self):
-        # if isinstance(self.request.user, AnonymousUser):
         if self.action == 'me':
             self.permission_classes = (IsAuthenticated,)
         return super().get_permissions()
@@ -217,15 +215,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             .order_by('ingredient__name')
             .annotate(ingredient_total=Sum('amount'))
         )
-        # user = request.user
-        # ingredients = (
-        #     user.shopping_cart.all()
-        #     .values(
-        #         'recipe__amount_ingredients__ingredient__name',
-        #         'recipe__amount_ingredients__ingredient__measurement_unit',
-        #     )
-        #     .annotate(ingredient_total=Sum('amount'))
-        # )
         shopping_list = ['К покупке:\n']
         for ingredient in ingredients:
             name = ingredient['ingredient__name']
