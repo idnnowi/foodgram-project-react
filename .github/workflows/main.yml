@@ -93,23 +93,14 @@ jobs:
     steps:
     - name: Check repo
       uses: actions/checkout@v3
-    - name: Copy docker-compose.yml viva ssh
+    - name: Copy docker-compose.yml and nginx.conf viva ssh
       uses: appleboy/scp-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
-        source: "/infra/docker-compose.yml"
-        target: "foodgram/infra"
-    - name: Copy  nginx.conf viva ssh
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USER }}
-        key: ${{ secrets.SSH_KEY }}
-        passphrase: ${{ secrets.SSH_PASSPHRASE }}
-        source: "/infra/nginx.conf"
+        source: "infra/"
         target: "foodgram/infra"
     - name: Executing remote ssh commands to deploy
       uses: appleboy/ssh-action@master

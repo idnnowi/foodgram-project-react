@@ -6,6 +6,8 @@ from django.core.validators import (
 
 from users.models import User
 
+MIN_VALUE = 1
+
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=128)
@@ -39,7 +41,9 @@ class Recipe(models.Model):
         Ingredient, through='recipeingredient'
     )
     tags = models.ManyToManyField(Tag)
-    cooking_time = models.IntegerField(validators=[MinValueValidator(1)])
+    cooking_time = models.IntegerField(
+        validators=[MinValueValidator(MIN_VALUE)]
+    )
 
 
 class RecipeIngredient(models.Model):
@@ -49,7 +53,7 @@ class RecipeIngredient(models.Model):
     ingredient = models.ForeignKey(
         Ingredient, on_delete=models.CASCADE, related_name='recipeingredient'
     )
-    amount = models.IntegerField(validators=[MinValueValidator(1)])
+    amount = models.IntegerField(validators=[MinValueValidator(MIN_VALUE)])
 
 
 class Favorite(models.Model):
