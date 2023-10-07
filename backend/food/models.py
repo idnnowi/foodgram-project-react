@@ -55,9 +55,6 @@ class RecipeIngredient(models.Model):
     )
     amount = models.IntegerField(validators=[MinValueValidator(MIN_VALUE)])
 
-    def __str__(self) -> str:
-        return f'{self.ingredient.name} - {self.amount}'
-
 
 class Favorite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
